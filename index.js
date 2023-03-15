@@ -23,25 +23,43 @@ function loadResourses(src) {
   return fetch(src).then(res => res.json());
 }
 
-function renderPage(module, src, style) {
+function renderPage(pathModule, src, style) {
   Promise.all([pathModule, src, style]
-  .map(src => loadResourses(src)))
-  .then(([pageModule, data]) => {
-    app.innerHTML = '';
-    app.append(pageModule.render(data));
-  });
-  
+    .map(src => loadResourses(src)))
+    .then(([pageModule, data]) => {
+      app.innerHTML = '';
+      if (number_episode) {
+        const planets = data.planets;
+        const species = data.species;
+        const starships = data.starships;
+        renderList([planets, species, starships])
+          .then((result => {
+            app.append(pageModule.render(data, result));
+          }))
+      }
+      app.append(pageModule.render(data));
+    });
+
 }
 
-const number_episode = 
+let number_episode = 1
 
-if(number_episode){
+if (number_episode) {
   renderPage('./star-wars-details.js',
-  `https://swapi.dev/api/films/${number_episode}`,
-  "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
+    `https://swapi.dev/api/films/${number_episode}`,
+    "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
 }
-else{
+else {
   renderPage('./star-wars-list.js',
-  `https://swapi.dev/api/films/`,
-  "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
+    `https://swapi.dev/api/films/`,
+    "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
 }
+
+function renderList(arr) {
+  return Promise.all(arr
+    .map(src => loadResourses(src)))
+    .then((arrResults) => {
+      return arrResults;
+    });
+}
+
