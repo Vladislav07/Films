@@ -37,8 +37,9 @@ function renderPage(pathModule, src, style) {
           renderList(starships),
         ]).then(([planets, species, starships]) => {
           app.append(pageModule.render(data, {planets, species, starships}));
-          return;
+          
         });
+        return;
       }
       app.append(pageModule.render(data));
     }
