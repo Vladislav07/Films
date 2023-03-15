@@ -1,8 +1,7 @@
 const cssPromises = {};
-const app = document.querySelector('#app')
+const app = document.querySelector('#app');
 
 function loadResourses(src) {
-
   if (src.endsWith('.js')) {
     return import(src);
   }
@@ -12,7 +11,7 @@ function loadResourses(src) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = src;
-      cssPromises[src] = new Promise(resolve => {
+      cssPromises[src] = new Promise((resolve) => {
         link.addEventListener('load', () => resolve());
       });
       document.head.append(link);
@@ -20,46 +19,48 @@ function loadResourses(src) {
     return cssPromises[src];
   }
 
-  return fetch(src).then(res => res.json());
+  return fetch(src).then((res) => res.json());
 }
 
 function renderPage(pathModule, src, style) {
-  Promise.all([pathModule, src, style]
-    .map(src => loadResourses(src)))
-    .then(([pageModule, data]) => {
+  Promise.all([pathModule, src, style].map((src) => loadResourses(src))).then(
+    ([pageModule, data]) => {
       app.innerHTML = '';
       if (number_episode) {
         const planets = data.planets;
         const species = data.species;
         const starships = data.starships;
-        renderList([planets, species, starships])
-          .then((result => {
-            app.append(pageModule.render(data, result));
-          }))
+
+        Promise.all([
+          renderList(planets),
+          renderList(species),
+          renderList(starships),
+        ]).then(([planets, species, starships]) => {
+          app.append(pageModule.render(data, {planets, species, starships}));
+          return;
+        });
       }
       app.append(pageModule.render(data));
-    });
-
+    }
+  );
 }
 
-let number_episode = 1
+let number_episode = 1;
 
 if (number_episode) {
-  renderPage('./star-wars-details.js',
+  renderPage(
+    './star-wars-details.js',
     `https://swapi.dev/api/films/${number_episode}`,
-    "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
-}
-else {
-  renderPage('./star-wars-list.js',
+    'https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css'
+  );
+} else {
+  renderPage(
+    './star-wars-list.js',
     `https://swapi.dev/api/films/`,
-    "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css")
+    'https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css'
+  );
 }
 
 function renderList(arr) {
-  return Promise.all(arr
-    .map(src => loadResourses(src)))
-    .then((arrResults) => {
-      return arrResults;
-    });
+  return Promise.all(arr.map((src) => loadResourses(src)));
 }
-
