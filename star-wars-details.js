@@ -40,7 +40,7 @@ h1 заголовок с названием эпизода и его episode_id
 
   entries.forEach(([key, value]) => {
     const h2 = document.createElement('h2');
-    h2.classList.add('title', 'mb-3','')
+    h2.classList.add('title', 'mb-3')
     h2.textContent = key;
     container.append(h2);
     container.append(renderEntries(value))
@@ -49,12 +49,13 @@ h1 заголовок с названием эпизода и его episode_id
 
   function renderEntries(array) {
     const section = document.createElement('section');
+    section.classList.add('row', 'row-cols-2')
 
     array.forEach(item => {
       const card = document.createElement('div');
       const ul = document.createElement('ul');
 
-      card.classList.add('card', 'mb-5');
+      card.classList.add('card', 'mb-5', 'w-75');
       ul.classList.add('list-group', 'list-group-flush')
       const h3 = document.createElement('h3');
       h3.classList.add('card-title', 'mb-3');
