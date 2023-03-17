@@ -1,4 +1,4 @@
-export function render (data){
+export function render (data, cb){
   console.log(data)
 
 /*
@@ -28,8 +28,15 @@ for (const film of data.results) {
   const span = document.createElement('span');
   const title = document.createElement('h3');
 
-  a.setAttribute('href', '#');
+  a.setAttribute('href', `?number_episode=${film.episode_id}`);
   a.classList.add('list-group-item', 'list-group-item-action')
+
+  a.addEventListener('click', (e)=>{
+    e.preventDefault();
+    history.pushState(null, '', `?number_episode=${film.episode_id}`)
+    cb()
+   })
+
   span.textContent ='Episode - ' + film.episode_id;
   title.textContent = film.title;
 

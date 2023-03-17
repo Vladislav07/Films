@@ -36,17 +36,17 @@ function renderPage(pathModule, src, style) {
           renderList(species),
           renderList(starships),
         ]).then(([planets, species, starships]) => {
-          app.append(pageModule.render(data, {planets, species, starships}));
+          app.append(pageModule.render(data, {planets, species, starships},backLinc));
           
         });
         return;
       }
-      app.append(pageModule.render(data));
+      app.append(pageModule.render(data),backLinc);
     }
   );
 }
-
-let number_episode = 1;
+const searchParams= new URLSearchParams(location.search)
+let number_episode = searchParams.get('number_episode');
 
 if (number_episode) {
   renderPage(
@@ -64,4 +64,12 @@ if (number_episode) {
 
 function renderList(arr) {
   return Promise.all(arr.map((src) => loadResourses(src)));
+}
+
+function backLinc() {
+  number_episode = searchParams.get('number_episode');
+    renderPage(
+      `https://swapi.dev/api/films/${number_episode}`
+    );
+  
 }

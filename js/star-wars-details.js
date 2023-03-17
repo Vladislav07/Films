@@ -1,4 +1,4 @@
-export function render(data, result) {
+export function render(data, result, cb) {
   //{, species, starships}
   console.log(data);
 
@@ -20,13 +20,19 @@ h1 заголовок с названием эпизода и его episode_id
   const container = document.createElement('div');
   const h1 = document.createElement('h1');
   const descr = document.createElement('p');
-  const btn = document.createElement('button');
+  const btn = document.createElement('a');
 
   container.classList.add('container', 'd-flex', 'flex-column');
   h1.classList.add('pt-3', 'mb-3');
-  btn.classList.add('btn', 'btn-primary', 'mb-4');
+  btn.setAttribute('href','/')
+  btn.classList.add('btn', 'btn-primary', 'mb-4','ml-auto');
   btn.textContent = 'Back to episodes';
-
+  
+  btn.addEventListener('click', (e)=>{
+   e.preventDefault();
+   history.pushState(null, '', '/');
+   cb();
+  })
   h1.textContent = 'Episode: ' + data.episode_id + ' - ' + data.title;
   descr.textContent = data.opening_crawl;
 
